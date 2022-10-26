@@ -26,8 +26,9 @@ export default function Login(props) {
     passwordErrors: null,
     errors: null,
     showPassword: false,
-    waitingForResponse: false,
   });
+
+  const [loading, setLoading] = React.useState(false)
 
   const navigate = useNavigate()
 
@@ -48,7 +49,7 @@ export default function Login(props) {
     const { url, opt } = postLoginRequest(values.username, values.password)
 
     try {
-      setValues({ ...values, waitingForResponse: true });
+      setLoading(true)
       const response = await fetch(url, opt);
       const response_json = await response.json();
 
@@ -85,7 +86,7 @@ export default function Login(props) {
       })
     }
     finally {
-      setValues({ ...values, waitingForResponse: false });
+      setLoading(false)
     }
   }
 
@@ -134,7 +135,7 @@ export default function Login(props) {
       <FormControl sx={styles.formButtonSx} variant="outlined">
         <LoadingButton
           variant="contained"
-          loading={values.waitingForResponse}
+          loading={loading}
           loadingPosition='end'
           endIcon={<SendIcon />}
           onClick={handleButtonClick}>
