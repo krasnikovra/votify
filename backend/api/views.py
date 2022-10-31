@@ -5,7 +5,7 @@ from django.http import Http404
 from .serializers import *
 from .models import *
 from .renderers import *
-from authentication.permissions import IsAuthenticatedOrCorsPreflight
+from votify.permissions import IsAuthenticatedOrCorsPreflight
 
 
 class QuestionViewSet(viewsets.ModelViewSet):

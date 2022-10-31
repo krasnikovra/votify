@@ -54,8 +54,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     """
     A User will have username, email and password
     """
-    username = models.CharField(db_index=True, max_length=255, unique=True)
-    email = models.EmailField(db_index=True, unique=True)
+    username = models.CharField(db_index=True, max_length=255, unique=True, error_messages={
+        'unique': "A user with such username already exists, please, try another one"
+    })
+    email = models.EmailField(db_index=True, unique=True, error_messages={
+        'unique': "This email has already been registered"
+    })
 
     # As in default Django's User we will not delete any users and
     # instead setting their is_active to False if a user wants to

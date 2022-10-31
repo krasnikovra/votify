@@ -1,13 +1,10 @@
+import settings from "./settings"
+
 const getUserRequest = () => {
-  const url = "http://127.0.0.1:8000/api/v1/auth/user/"
-  const headers = {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Authorization': `Token ${localStorage.getItem('jwt_token') || ''}`,
-  }
+  const url = `${settings.apiURL}${settings.auth}user/`
   const opt = {
     method: "GET",
-    headers: headers,
+    headers: settings.headers(),
   }
 
   return {

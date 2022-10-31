@@ -13,6 +13,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import SendIcon from "@mui/icons-material/Send";
 import Typography from "@mui/material/Typography";
 import FormHelperText from "@mui/material/FormHelperText";
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 
 import styles from "./styles";
 
@@ -32,7 +33,7 @@ export default function Login(props) {
 
   const navigate = useNavigate()
 
-  const [searchParams, ] = useSearchParams();
+  const [searchParams,] = useSearchParams();
   const next = searchParams.get('next');
 
   const handleValueChange = (value) => (e) =>
@@ -133,6 +134,13 @@ export default function Login(props) {
           values.errors.map((err, idx) => <FormHelperText key={idx}> {err} </FormHelperText>)}
       </FormControl>
       <FormControl sx={styles.formButtonSx} variant="outlined">
+        <LoadingButton
+          variant="contained"
+          disabled={loading}
+          endIcon={<ChangeCircleIcon />}
+          onClick={() => navigate(`/register/${next !== null ? `?next=${next}` : ""}`)}>
+          Register
+        </LoadingButton>
         <LoadingButton
           variant="contained"
           loading={loading}

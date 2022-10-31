@@ -15,19 +15,14 @@ const styles = {
   },
   formFieldSx: {
     m: 1,
-    width: '30ch',
+    width: '40ch',
   },
   formButtonSx: {
     m: 1,
-    width: '30ch',
-    justifyContent: 'end',
+    width: '40ch',
+    justifyContent: 'space-between',
     alignItems: 'end',
-  },
-  formButtonDisabledSx: {
-    m: 1,
-    width: '30ch',
-    justifyContent: 'end',
-    alignItems: 'end',
+    flexDirection: 'row',
   },
   voteCardSx: {
     maxWidth: '25vw',

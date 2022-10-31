@@ -1,10 +1,11 @@
 import settings from "./settings"
 
-const postLoginRequest = (username, password) => {
-  const url = `${settings.apiURL}${settings.auth}login/`
+const postRegisterRequest = (username, email, password) => {
+  const url = `${settings.apiURL}${settings.auth}register/`
   const body = {
     user: {
       username: username,
+      email: email,
       password: password,
     }
   }
@@ -20,4 +21,4 @@ const postLoginRequest = (username, password) => {
   }
 }
 
-export default postLoginRequest;
+export default postRegisterRequest;
