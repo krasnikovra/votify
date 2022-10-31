@@ -8,9 +8,13 @@ const postLoginRequest = (username, password) => {
       password: password,
     }
   }
+  const headers = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+  }
   const opt = {
     method: "POST",
-    headers: settings.headers(),
+    headers: headers,
     body: JSON.stringify(body),
   }
 

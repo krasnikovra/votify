@@ -39,6 +39,12 @@ export default function Register(props) {
     emailErrors: [],
     passwordErrors: [],
     passwordRepeatErrors: [],
+  })
+
+  const [networkErrors, setNetworkErrors] = React.useState({
+    usernameErrors: [],
+    emailErrors: [],
+    passwordErrors: [],
     errors: [],
   })
 
@@ -71,8 +77,7 @@ export default function Register(props) {
 
         if (response.status === 400) {
           const response_errors = response_json.errors;
-          setErrors({
-            ...errors,
+          setNetworkErrors({
             usernameErrors: response_errors.username || [],
             passwordErrors: response_errors.password || [],
             emailErrors: response_errors.email || [],
@@ -85,11 +90,10 @@ export default function Register(props) {
         else {
           // saving JWT token in local storage
           localStorage.setItem('jwt_token', response_json.user.token);
-          setErrors({
+          setNetworkErrors({
             usernameErrors: [],
             emailErrors: [],
             passwordErrors: [],
-            passwordRepeatErrors: [],
             errors: [],
           })
           // and redirecting to the page needed authorization
@@ -210,15 +214,10 @@ export default function Register(props) {
 
   React.useEffect(() => {
     validate(validators.password)
-    // validators and validate are constants so this should be fine
-    // eslint-disable-next-line
-  }, [values.password])
-
-  React.useEffect(() => {
     validate(validators.passwordRepeat)
     // validators and validate are constants so this should be fine
     // eslint-disable-next-line
-  }, [values.passwordRepeat])
+  }, [values.password, values.passwordRepeat])
 
   React.useEffect(() => {
     const noErrors = Object.values(errors).every(list => list.length === 0)
@@ -231,7 +230,8 @@ export default function Register(props) {
       <Typography sx={styles.formHeaderSx}>
         Register
       </Typography>
-      <FormControl error={errors.usernameErrors.length + errors.errors.length > 0}
+      <FormControl error={errors.usernameErrors.length + 
+       networkErrors.usernameErrors.length + networkErrors.errors.length > 0}
         sx={styles.formFieldSx} variant="outlined">
         <InputLabel htmlFor="username">Username</InputLabel>
         <OutlinedInput
@@ -242,8 +242,10 @@ export default function Register(props) {
           onInput={handleValueChange('username')}
         />
         {errors.usernameErrors.map((err, idx) => <FormHelperText key={idx}> {err} </FormHelperText>)}
+        {networkErrors.usernameErrors.map((err, idx) => <FormHelperText key={idx}> {err} </FormHelperText>)}
       </FormControl>
-      <FormControl error={errors.emailErrors.length + errors.errors.length > 0}
+      <FormControl error={errors.emailErrors.length + 
+       networkErrors.emailErrors.length + networkErrors.errors.length > 0}
         sx={styles.formFieldSx} variant="outlined">
         <InputLabel htmlFor="email">Email</InputLabel>
         <OutlinedInput
@@ -254,8 +256,10 @@ export default function Register(props) {
           onInput={handleValueChange('email')}
         />
         {errors.emailErrors.map((err, idx) => <FormHelperText key={idx}> {err} </FormHelperText>)}
+        {networkErrors.emailErrors.map((err, idx) => <FormHelperText key={idx}> {err} </FormHelperText>)}
       </FormControl>
-      <FormControl error={errors.passwordErrors.length + errors.errors.length > 0}
+      <FormControl error={errors.passwordErrors.length + 
+       networkErrors.passwordErrors.length + networkErrors.errors.length > 0}
         sx={styles.formFieldSx} variant="outlined">
         <InputLabel htmlFor="password">Password</InputLabel>
         <OutlinedInput
@@ -278,8 +282,9 @@ export default function Register(props) {
           label="Password"
         />
         {errors.passwordErrors.map((err, idx) => <FormHelperText key={idx}> {err} </FormHelperText>)}
+        {networkErrors.passwordErrors.map((err, idx) => <FormHelperText key={idx}> {err} </FormHelperText>)}
       </FormControl>
-      <FormControl error={errors.passwordRepeatErrors.length + errors.errors.length > 0}
+      <FormControl error={errors.passwordRepeatErrors.length + networkErrors.errors.length > 0}
         sx={styles.formFieldSx} variant="outlined">
         <InputLabel htmlFor="password-repeat">Repeat password</InputLabel>
         <OutlinedInput
@@ -302,7 +307,6 @@ export default function Register(props) {
           label="Repeat password"
         />
         {errors.passwordRepeatErrors.map((err, idx) => <FormHelperText key={idx}> {err} </FormHelperText>)}
-        {errors.errors.map((err, idx) => <FormHelperText key={idx}> {err} </FormHelperText>)}
       </FormControl>
       <FormControl sx={styles.formButtonSx} variant="outlined">
         <LoadingButton
@@ -322,6 +326,9 @@ export default function Register(props) {
           onClick={handleButtonClick}>
           Register
         </LoadingButton>
+      </FormControl>
+      <FormControl sx={styles.formFieldSx} variant="outlined" error={networkErrors.errors.length > 0}>
+        {networkErrors.errors.map((err, idx) => <FormHelperText key={idx}> {err} </FormHelperText>)}
       </FormControl>
     </Box>
   );
