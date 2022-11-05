@@ -8,11 +8,42 @@ from .renderers import *
 from votify.permissions import IsAuthenticatedOrCorsPreflight
 
 
-class QuestionViewSet(viewsets.ModelViewSet):
-    queryset = Question.objects.all().order_by('pk')
+class QuestionViewSet(viewsets.ViewSet):
     permission_classes = (IsAuthenticatedOrCorsPreflight,)
     serializer_class = QuestionSerializer
     renderer_classes = (QuestionJSONRenderer,)
+
+    def options(self, request, *args, **kwargs):
+        print(request)
+        return Response({
+            'name': 'Question API endpoint',
+        }, status.HTTP_200_OK)
+
+    def post(self, request):
+        question = request.data.get('question', {})
+        serializer = self.serializer_class(data=question, context={
+            'request': request
+        })
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        print(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def get_all(self, request):
+        questions = Question.objects.all()
+        serializer = self.serializer_class(questions, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def get_specific(self, request, pk=None):
+        try:
+            question = Question.objects.get(pk=pk)
+            serializer = self.serializer_class(question, context={
+                'request': request
+            })
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Question.DoesNotExist:
+            raise Http404("Question not found")
+
 
 
 class VoteView(views.APIView):

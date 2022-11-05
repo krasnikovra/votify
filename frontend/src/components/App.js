@@ -1,5 +1,6 @@
 import React from 'react';
-import { Routes, Route} from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
+import CreateQuestion from './CreateQuestion';
 
 import Login from './Login';
 import QuestionCard from './QuestionCard';
@@ -10,6 +11,7 @@ export default function App(props) {
     <Routes>
       <Route exact path="/login/" element={<Login defaultNext="/" />} />
       <Route exact path="/register/" element={<Register defaultNext="/" />} />
+      <Route exact path="/question/create/" element={<CreateQuestion />} />
       <Route path="/question/*" element={<QuestionCard />} />
     </Routes>
   );

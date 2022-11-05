@@ -11,6 +11,7 @@ class ChoiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Choice
         fields = ('id', 'text', 'vote_count')
+        read_only_fields = ('id', 'vote_count')
 
 
 class OwnerSerializer(serializers.ModelSerializer):
@@ -32,6 +33,10 @@ class QuestionSerializer(serializers.ModelSerializer):
         fields = ('owner', 'id', 'text', 'vote_count',
                   'voted_for', 'date_published', 'choices')
 
+    def validate(self, data):
+        print(data)
+        return data
+
     def get_voted_for(self, validated_data):
         user = self.context['request'].user
         vote = Vote.objects.filter(user=user, question=validated_data)
@@ -46,8 +51,10 @@ class QuestionSerializer(serializers.ModelSerializer):
         """
         Create a Question from JSON of Question contains list of choices
         """
+        print(validated_data)
         choices_data = validated_data.pop('choices')
-        question = Question.objects.create(**validated_data)
+        question_obj = Question.objects.create(text=validated_data['text'],
+                                           owner=self.context['request'].user)
         for choice_data in choices_data:
-            Choice.objects.create(question=question, **choice_data)
-        return question
+            Choice.objects.create(question=question_obj, **choice_data)
+        return question_obj
