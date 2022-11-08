@@ -25,7 +25,10 @@ const styles = {
     flexDirection: 'row',
   },
   voteCardSx: {
-    maxWidth: '25%',
+    my: 4,
+    mx: 4,
+    maxWidth: '50ch',
+    minWidth: '30ch',
   },
   voteCardQuestionSx: {
     fontSize: 20,

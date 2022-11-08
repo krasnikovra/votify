@@ -1,5 +1,5 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import Card from '@mui/material/Card';
 import TextField from '@mui/material/TextField';
@@ -17,6 +17,7 @@ import Button from '@mui/material/Button';
 
 import styles from './styles';
 import postQuestionRequest from './api/postQuestion';
+import Utils from './utils';
 
 
 export default function CreateQuestion(props) {
@@ -25,6 +26,7 @@ export default function CreateQuestion(props) {
   const [choices, setChoices] = React.useState(["", ""])
 
   const navigate = useNavigate()
+  const location = useLocation()
 
   const onButtonClick = async () => {
     const { url, opt } = postQuestionRequest(question, choices)
@@ -32,7 +34,10 @@ export default function CreateQuestion(props) {
       setLoading(true)
       const response = await fetch(url, opt)
       const response_json = await response.json()
-      if (response.status >= 400) {
+      if (response.status === 403) {
+        Utils.redirectToLogin(navigate, location)
+      }
+      else if (response.status >= 400) {
         throw new Error(response.statusText)
       } else {
         navigate(`/question/${response_json.question.id}`)
@@ -44,7 +49,7 @@ export default function CreateQuestion(props) {
     }
   }
 
-  return (
+  const card = (
     <Box sx={styles.voteCardSx}>
       <Card variant='outlined'>
         <CardHeader
@@ -122,6 +127,12 @@ export default function CreateQuestion(props) {
         onClick={onButtonClick}>
         Create question
       </LoadingButton>
+    </Box>
+  )
+
+  return (
+    <Box>
+      {card}
     </Box>
   )
 }
