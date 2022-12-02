@@ -135,7 +135,8 @@ export default function Login(props) {
       </FormControl>
       <FormControl sx={styles.formButtonSx} variant="outlined">
         <LoadingButton
-          variant="contained"
+          variant="outlined"
+          color="secondary"
           disabled={loading}
           endIcon={<ChangeCircleIcon />}
           onClick={() => navigate(`/register/${next !== null ? `?next=${next}` : ""}`)}>

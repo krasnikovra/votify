@@ -310,7 +310,8 @@ export default function Register(props) {
       </FormControl>
       <FormControl sx={styles.formButtonSx} variant="outlined">
         <LoadingButton
-          variant="contained"
+          variant="outlined"
+          color="secondary"
           loading={loading}
           loadingPosition='end'
           endIcon={<ChangeCircleIcon />}
