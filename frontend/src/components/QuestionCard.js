@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useLocation, useMatch } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import QuestionVoteCard from './QuestionVoteCard';
 import QuestionResultCard from './QuestionResultCard';
@@ -9,11 +9,10 @@ import getQuestionRequest from './api/getQuestion'
 
 export default function QuestionCard(props) {
   const [question, setQuestion] = React.useState(undefined)
+  const questionid = props.id
 
   const navigate = useNavigate();
   const location = useLocation();
-  const match = useMatch('question/:questionid')
-  const questionid = match.params.questionid;
 
   const refreshQuestion = React.useCallback(async () => {
     const { url, opt } = getQuestionRequest(questionid);

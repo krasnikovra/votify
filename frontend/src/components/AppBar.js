@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Routes, Route } from 'react-router-dom';
 import MUIAppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -17,39 +17,10 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import authenticate from './api/authenticate';
+import Utils from './utils';
 
 const drawerWidth = 240;
 const appBarHeight = 80;
-
-// see: https://github.com/mui/material-ui/blob/v5.10.13/docs/data/material/components/avatars/BackgroundLetterAvatars.js
-function stringToColor(string) {
-  let hash = 0;
-  let i;
-
-  /* eslint-disable no-bitwise */
-  for (i = 0; i < string.length; i += 1) {
-    hash = string.charCodeAt(i) + ((hash << 5) - hash);
-  }
-
-  let color = '#';
-
-  for (i = 0; i < 3; i += 1) {
-    const value = (hash >> (i * 8)) & 0xff;
-    color += `00${value.toString(16)}`.slice(-2);
-  }
-  /* eslint-enable no-bitwise */
-
-  return color;
-}
-
-function stringAvatar(name) {
-  return {
-    sx: {
-      bgcolor: stringToColor(name),
-    },
-    children: name[0],
-  };
-}
 
 export default function AppBar(props) {
   const [user, setUser] = React.useState(undefined)
@@ -96,12 +67,13 @@ export default function AppBar(props) {
         <Box key={listIndex}>
           <List key={listIndex}>
             {list.map((item, index) => (
-              <ListItem key={index} disablePadding>
+              item.text !== undefined && 
+              (<ListItem key={index} disablePadding>
                 <ListItemButton onClick={() => navigate(item.link || '/')}>
                   {item.icon !== undefined && <ListItemIcon>{item.icon}</ListItemIcon>}
                   <ListItemText primary={item.text || 'Undefined link'} />
                 </ListItemButton>
-              </ListItem>
+              </ListItem>)
             ))}
           </List>
           {listIndex < props.menu.length - 1 && <Divider />}
@@ -109,7 +81,6 @@ export default function AppBar(props) {
       ))}
     </Box>
   );
-
 
   return user === undefined ? <></> : (
     <Box sx={{ display: 'flex' }}>
@@ -152,7 +123,7 @@ export default function AppBar(props) {
             <Box sx={{ flexGrow: 0, mr: 5 }}>
               {user !== undefined &&
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar {...stringAvatar(user.username)} />
+                  <Avatar {...Utils.stringAvatar(user.username)} />
                 </IconButton>
               }
               <Menu
@@ -221,7 +192,13 @@ export default function AppBar(props) {
           left: drawerWidth,
         }}
       >
-        {props.children}
+        <Routes>
+          {props.menu.map((list) => (
+            list.map((elem) => (
+              <Route path={elem.link} element={<elem.component user={user} />} />
+            ))
+          ))}
+        </Routes>
       </Box>
     </Box>
   );

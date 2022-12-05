@@ -58,3 +58,9 @@ class QuestionSerializer(serializers.ModelSerializer):
         for choice_data in choices_data:
             Choice.objects.create(question=question_obj, **choice_data)
         return question_obj
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username')

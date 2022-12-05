@@ -1,5 +1,4 @@
 import React from "react";
-import { Routes, Route } from 'react-router-dom';
 
 import HomeIcon from '@mui/icons-material/Home';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
@@ -8,8 +7,11 @@ import SearchIcon from '@mui/icons-material/Search';
 
 import AppBar from './AppBar';
 import CreateQuestion from './CreateQuestion';
-import QuestionCard from './QuestionCard';
 import SearchQuestion from "./SearchQuestion";
+import Home from "./Home";
+import Question from "./Question";
+import Profile from "./Profile";
+import About from "./About";
 
 export default function AppAuthorized(props) {
   return (
@@ -17,33 +19,39 @@ export default function AppAuthorized(props) {
       [
         {
           text: "Home",
-          link: "/",
+          link: "/home/",
           icon: <HomeIcon />,
+          component: Home,
         },
         {
           text: "Create question",
           link: "/question/create/",
           icon: <NoteAddIcon />,
+          component: CreateQuestion,
         },
         {
           text: "Search",
           link: "/question/search/",
           icon: <SearchIcon />,
+          component: SearchQuestion,
         },
+        {
+          link: "/question/*",
+          component: Question,
+        },
+        {
+          link: "/profile/*",
+          component: Profile,
+        }
       ],
       [
         {
           text: "About project",
           link: "/about/",
-          icon: <InfoIcon />
+          icon: <InfoIcon />,
+          component: About, // change this
         },
       ]
-    ]}>
-      <Routes>
-        <Route exact path="/question/create/" element={<CreateQuestion />} />
-        <Route exact path="/question/search/" element={<SearchQuestion />} />
-        <Route path="/question/*" element={<QuestionCard />} />
-      </Routes>
-    </AppBar>
+    ]} />
   )
 }

@@ -77,7 +77,7 @@ export default function QuestionResultCard(props) {
         subheader={
           <Typography sx={styles.voteCardHeaderSubheaderSx}>
             Posted on {question.date_published} by&nbsp;
-            <Link component={RouterLink} to={`../user/${question.owner.id}`}>{question.owner.username}</Link>
+            <Link component={RouterLink} to={`../profile/${question.owner.id}`}>{question.owner.username}</Link>
           </Typography>
         }
         action={

@@ -14,7 +14,6 @@ class QuestionViewSet(viewsets.ViewSet):
     renderer_classes = (QuestionJSONRenderer,)
 
     def options(self, request, *args, **kwargs):
-        print(request)
         return Response({
             'name': 'Question API endpoint',
         }, status.HTTP_200_OK)
@@ -26,7 +25,6 @@ class QuestionViewSet(viewsets.ViewSet):
         })
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        print(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get_all(self, request):
@@ -44,6 +42,16 @@ class QuestionViewSet(viewsets.ViewSet):
         except Question.DoesNotExist:
             raise Http404("Question not found")
 
+    def get_user_latest(self, request, userpk=None):
+        try:
+            user = User.objects.get(pk=userpk)
+            questions = Question.objects.filter(owner=user).order_by('-date_published')[:3]
+            serializer = self.serializer_class(questions, many=True, context={
+                'request': request
+            })
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            raise Http404("User not found")
 
 
 class VoteView(views.APIView):
@@ -125,3 +133,16 @@ class VoteView(views.APIView):
             return Response({
                 'msg': f'You have not passed an id of question'
             }, status.HTTP_400_BAD_REQUEST)    
+
+
+class UserView(views.APIView):
+    serializer_class = UserSerializer
+    renderer_classes = (UserJSONRenderer,)
+
+    def get(self, request, pk=None):
+        try:
+            user = User.objects.get(pk=pk)
+            serializer = self.serializer_class(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            raise Http404("User not found")
