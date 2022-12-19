@@ -14,6 +14,10 @@ class QuestionJSONRenderer(JSONRenderer):
                 # if we got error they should not be bound in 'user' field
                 return super(QuestionJSONRenderer, self).render(data)
 
+            if data.get('questions', None) is not None:
+                # if questions field is built-in already no need to wrap
+                return super(QuestionJSONRenderer, self).render(data)
+
             return json.dumps({
                 'question': data
             })

@@ -1,6 +1,7 @@
 from rest_framework import viewsets, views, status
 from rest_framework.response import Response
 from django.http import Http404
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .serializers import *
 from .models import *
@@ -52,6 +53,30 @@ class QuestionViewSet(viewsets.ViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             raise Http404("User not found")
+
+    def get_search_by_mask(self, request):
+        QUESTIONS_PER_PAGE = 3
+        try:
+            text = request.GET.get("text", None)
+            if text is None:
+                return Response({
+                    "pages": 0,
+                    "questions": []
+                }, status=status.HTTP_200_OK)
+
+            page = request.GET.get("page", 1)
+            paginator = Paginator(Question.objects.filter(text__icontains=text), QUESTIONS_PER_PAGE)
+            questions = paginator.page(page).object_list
+
+            serializer = self.serializer_class(questions, many=True, context={
+                'request': request
+            })
+            return Response({
+                "pages": paginator.num_pages if len(questions) > 0 else 0,
+                "questions": serializer.data
+            }, status=status.HTTP_200_OK)
+        except (EmptyPage, PageNotAnInteger):
+            raise Http404("Page not found")
 
 
 class VoteView(views.APIView):
